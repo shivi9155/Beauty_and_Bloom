@@ -263,7 +263,7 @@
         }
 
         // Show an improved Login / Sign up modal with password handling
-        function showLoginModal() {
+        function showLoginModal(defaultMode) {
             const modal = document.createElement('div');
             modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:3000';
             modal.innerHTML = `
@@ -368,10 +368,10 @@
             modal.addEventListener('click', function(e) { if (e.target === modal) document.body.removeChild(modal); });
 
             // default mode
-            setMode('login');
+            setMode(defaultMode || 'login');
         }
 
-        if (loginBtn) loginBtn.addEventListener('click', showLoginModal);
+        if (loginBtn) loginBtn.addEventListener('click', () => showLoginModal());
 
         // User avatar click: show profile dropdown with Profile / Logout
         function toggleProfileDropdown() {
@@ -496,4 +496,11 @@
         }
 
         // Initialize when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => { initSimpleWishlist(); updateCartCount(); });
+        document.addEventListener('DOMContentLoaded', () => {
+            initSimpleWishlist();
+            updateCartCount();
+            // Auto-open signup modal for new visitors who are not logged in
+            if (!localStorage.getItem('beautyBloomUser')) {
+                setTimeout(() => showLoginModal('signup'), 300);
+            }
+        });
